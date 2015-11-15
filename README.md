@@ -2,7 +2,7 @@ Dictionary Cli
 ===============
 
 This python package finds the meaning for a word. It also lists the sentences,
-synonyms and antonymns for a given word.
+synonyms and antonyms for a given word.
 
 Install
 =======
