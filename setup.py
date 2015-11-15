@@ -31,9 +31,10 @@ setup(
     url='https://github.com/staranjeet/dictionary-cli',
     packages=['findmeaning'],
     install_requires=[
-        'docopt>=0.6.2',
-        "requests>=2.7.0",
-        'colorama==0.3.3'
+        'docopt>=0.6.1',
+        'requests>=2.7.0',
+        'colorama>=0.3.3',
+        'beautifulsoup4>=4.4.1'
     ],
     entry_points={
         'console_scripts': [
