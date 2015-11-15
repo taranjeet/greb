@@ -9,8 +9,8 @@ Options:
     -e --sen        Lists sentence
     -y --syn        Lists synonyms
     -n --ant        Lists antonyms
-    --version       Show version
-    -h --help       Show this screen
+    --version       Lists version
+    -h --help       Lists help
 """
 
 import requests
@@ -92,7 +92,6 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
 def main():
     '''findmeaning is a command line tool to find meanings'''
     arguments = docopt(__doc__, version=__version__)
-    print(arguments)
     if arguments['<WORD>']:
         flag_meaning = True
         if (arguments.get('-l') or arguments.get('--all')):
