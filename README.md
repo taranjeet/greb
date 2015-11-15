@@ -1,22 +1,22 @@
-Dictionary Cli
-===============
+Greb
+=====
 
 This python package finds the meaning for a word. It also lists the sentences,
-synonyms and antonyms for a given word.
+synonyms and antonyms for a given word. Greb stands for Grab meaning from web.
 
 Install
 =======
 
 * Using `pip`
 ```
-$ pip install find-meaning
+$ pip install greb
 ```
 
 * From source
 
 ```
-$ git clone https://github.com/staranjeet/dictionary-cli
-$ cd dictionary-cli
+$ git clone https://github.com/staranjeet/greb
+$ cd greb
 $ python setup.py install
 ```
 
@@ -24,7 +24,7 @@ Usage
 =====
 
 ```
-$ findmeaning awesome
+$ greb awesome
 
 MEANING
 

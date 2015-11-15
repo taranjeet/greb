@@ -4,17 +4,13 @@ from setuptools import setup
 import sys
 
 setup(
-    name='find-meaning',
+    name='greb',
     version='0.0.1',
     description='Finds the meaning for a particular word',
     long_description=open('README.rst').read(),
     author='Taranjeet Singh',
     license='MIT',
     classifiers=[
-        # How mature is this project? Common values are
-        #   3 - Alpha
-        #   4 - Beta
-        #   5 - Production/Stablegit
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
@@ -34,8 +30,8 @@ setup(
     ],
     keywords="dictionary cli, word meaning, meaning-cli",
     author_email='reachtotj@gmail.com',
-    url='https://github.com/staranjeet/dictionary-cli',
-    packages=['findmeaning'],
+    url='https://github.com/staranjeet/greb',
+    packages=['greb'],
     install_requires=[
         'docopt>=0.6.1',
         'requests>=2.7.0',
@@ -44,7 +40,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'findmeaning = findmeaning.meaning:main'
+            'greb = greb.meaning:main'
             ],
     }
 )
