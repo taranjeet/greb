@@ -23,15 +23,18 @@ __version__ = '0.0.1'
 
 BASE_URL = 'http://www.merriam-webster.com/dictionary/'
 
+
 def print_heading(heading, color):
     '''prints the heading for a section of output'''
     print("")
     print(color + heading + Fore.RESET)
     print("")
 
+
 def print_error_messages(msg):
     '''prints the error messgaes in red'''
     print(Fore.RED + msg + Fore.RESET)
+
 
 def display_meaning(tree):
     '''prints the meaning corresponding to a word'''
@@ -52,6 +55,7 @@ def display_sentences(tree, word):
     else:
         print_error_messages("Oops! There are no sentences to display. Why not frame your own?")
 
+
 def display_synonyms(tree):
     '''prints the synonyms for a given word'''
     synonyms = tree.find("dl")
@@ -61,15 +65,17 @@ def display_synonyms(tree):
     else:
         print_error_messages("Ohh! There are no synonyms.")
 
+
 def display_antonyms(tree):
     '''prints the antonyms for a given word'''
     antonyms = tree.findAll("dl")
-    if len(antonyms)>1:
+    if len(antonyms) > 1:
         antonyms = antonyms[1]
         print_heading('ANTONYM', Fore.RED)
         print(', '.join([each.text for each in antonyms.findAll("a")]))
     else:
         print_error_messages("Ohh! There are no antonyms.")
+
 
 def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=False, print_antonym=False):
     '''reads the web page and make a html tree'''
