@@ -1,8 +1,6 @@
 Dictionary Cli
 ===============
 
-[![PyPI version](https://badge.fury.io/py/github-trending.svg)](https://badge.fury.io/py/github-trending)
-
 This python package finds the meaning for a word. It also lists the sentences,
 synonyms and antonymns for a given word.
 
