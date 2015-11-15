@@ -1,2 +1,4 @@
 py*/
 *.pyc
+*.egg-info/
+dist/*
