@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from colorama import Fore
 from docopt import docopt
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 BASE_URL = 'http://www.merriam-webster.com/dictionary/'
 
