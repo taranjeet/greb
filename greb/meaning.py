@@ -23,6 +23,8 @@ __version__ = '0.0.1'
 
 BASE_URL = 'http://www.merriam-webster.com/dictionary/'
 
+requests.packages.urllib3.disable_warnings()
+
 
 def print_heading(heading, color):
     '''prints the heading for a section of output'''
@@ -39,10 +41,22 @@ def print_error_messages(msg):
 def display_meaning(tree):
     '''prints the meaning corresponding to a word'''
     meanings = tree.find("div", {"class": "ld_on_collegiate"})
+    found_meaning = False
     if meanings:
+        found_meaning = True
         print_heading('MEANING', Fore.YELLOW)
         for each in meanings.findAll("p"):
             print(each.text)
+    else:
+        meanings = tree.find("span", {"class": "ssens"})
+        if meanings:
+            found_meaning = True
+            print_heading('MEANING', Fore.YELLOW)
+            for each in meanings.text.split(':'):
+                if len(each.strip()) > 0:
+                    print(': ' + each)
+    if not found_meaning:
+        print_error_messages("Unable to find meaning for this word. Are you sure its spelled right?")
 
 
 def display_sentences(tree, word):
