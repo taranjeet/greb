@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='greb',
-    version='0.0.2',
+    version='0.0.3',
     description='Finds the meaning for a particular word',
     long_description=open('README.rst').read(),
     author='Taranjeet Singh',
@@ -34,7 +34,7 @@ setup(
     packages=['greb'],
     install_requires=[
         'docopt>=0.6.1',
-        'requests>=2.7.0',
+        'requests==2.7.0',
         'colorama>=0.3.3',
         'beautifulsoup4>=4.4.1'
     ],
