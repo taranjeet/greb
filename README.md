@@ -3,7 +3,8 @@ Greb
 [![PyPI version](https://badge.fury.io/py/greb.svg)](https://badge.fury.io/py/greb)
 
 This python package finds the meaning for a word. It also lists the sentences,
-synonyms and antonyms for a given word. Greb stands for Grab meaning from web.
+synonyms and antonyms for a given word. If a word is misspeled, it lists the suggestion 
+for that word. Greb stands for Grab meaning from web.
 
 Install
 =======
