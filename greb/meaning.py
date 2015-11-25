@@ -48,13 +48,17 @@ def display_meaning(tree):
         for each in meanings.findAll("p"):
             print(each.text)
     else:
-        meanings = tree.find("span", {"class": "ssens"})
+        meanings = tree.findAll("span", {"class": "ssens"})
         if meanings:
             found_meaning = True
             print_heading('MEANING', Fore.YELLOW)
-            for each in meanings.text.split(':'):
-                if len(each.strip()) > 0:
-                    print(': ' + each)
+            for each in meanings:
+                if ':' in each.text:
+                    each = each.text.split(':')[1].replace(u'\xc2', ' ').replace(u'\xa0', ' ')
+                    if len(each.strip()) > 0:
+                        print(': ' + each.strip().encode('utf8'))
+                else:
+                    print(each.text.encode('utf8').strip())
     if not found_meaning:
         print_error_messages("Unable to find meaning for this word. Are you sure its spelled right?")
 
