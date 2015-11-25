@@ -95,11 +95,21 @@ def display_antonyms(tree):
         print_error_messages("Ohh! There are no antonyms.")
 
 
+def get_suggestions(tree):
+    '''lists the suggestions for a word in case of 404'''
+    suggestions = tree.findAll("ol", {"class": "franklin-spelling-help"})
+    if suggestions:
+        print(Fore.BLUE + 'It seems that you have not entered a valid word. We know' + Fore.RESET +
+              Fore.GREEN + ' To err is human.' + Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
+        print_heading('SUGGESTION', Fore.YELLOW)
+        print(', '.join([each.text for each in suggestions[0].findAll("a")]))
+
+
 def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=False, print_antonym=False):
     '''reads the web page and make a html tree'''
     req = requests.get(BASE_URL+word)
+    tree = BeautifulSoup(req.text, 'html.parser')
     if req.status_code == requests.codes.ok:
-        tree = BeautifulSoup(req.text, 'html.parser')
         if print_meaning:
             display_meaning(tree)
         if print_sentence:
@@ -108,6 +118,11 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
             display_synonyms(tree)
         if print_antonym:
             display_antonyms(tree)
+    elif req.status_code == 404:
+        if 'Dictionary Spelling Help' in req.text:
+            get_suggestions(tree)
+        else:
+            print_error_messages("The word you've entered was not found. Please try your search again.")
     else:
         print_error_messages("Unable to retrieve meaning. Try again later!")
         sys.exit()
