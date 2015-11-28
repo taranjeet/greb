@@ -57,7 +57,3 @@ Package Link
 ============
 
 Pypi [link](https://pypi.python.org/pypi/greb)
-
-TODOS
-======
-[] Replace bs4 functions to follow pep8 standard, like findAll to find_all
