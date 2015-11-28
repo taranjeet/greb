@@ -45,10 +45,10 @@ def display_meaning(tree):
     if meanings:
         found_meaning = True
         print_heading('MEANING', Fore.YELLOW)
-        for each in meanings.findAll("p"):
+        for each in meanings.find_all("p"):
             print(each.text)
     else:
-        meanings = tree.findAll("span", {"class": "ssens"})
+        meanings = tree.find_all("span", {"class": "ssens"})
         if meanings:
             found_meaning = True
             print_heading('MEANING', Fore.YELLOW)
@@ -68,7 +68,7 @@ def display_sentences(tree, word):
     sentences = tree.find("div", {"class": "example-sentences"})
     if sentences:
         print_heading('SENTENCE', Fore.GREEN)
-        for each in sentences.findAll("li", {"class": "always-visible"}):
+        for each in sentences.find_all("li", {"class": "always-visible"}):
             print(each.text.replace(word, Fore.CYAN + word + Fore.RESET))
     else:
         print_error_messages("Oops! There are no sentences to display. Why not frame your own?")
@@ -79,30 +79,30 @@ def display_synonyms(tree):
     synonyms = tree.find("dl")
     if synonyms:
         print_heading('SYNONYM', Fore.BLUE)
-        print(', '.join([each.text for each in synonyms.findAll("a")]))
+        print(', '.join([each.text for each in synonyms.find_all("a")]))
     else:
         print_error_messages("Ohh! There are no synonyms.")
 
 
 def display_antonyms(tree):
     '''prints the antonyms for a given word'''
-    antonyms = tree.findAll("dl")
+    antonyms = tree.find_all("dl")
     if len(antonyms) > 1:
         antonyms = antonyms[1]
         print_heading('ANTONYM', Fore.RED)
-        print(', '.join([each.text for each in antonyms.findAll("a")]))
+        print(', '.join([each.text for each in antonyms.find_all("a")]))
     else:
         print_error_messages("Ohh! There are no antonyms.")
 
 
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
-    suggestions = tree.findAll("ol", {"class": "franklin-spelling-help"})
+    suggestions = tree.find_all("ol", {"class": "franklin-spelling-help"})
     if suggestions:
         print(Fore.BLUE + 'It seems that you have not entered a valid word. We know' + Fore.RESET +
               Fore.GREEN + ' To err is human.' + Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
         print_heading('SUGGESTION', Fore.YELLOW)
-        print(', '.join([each.text for each in suggestions[0].findAll("a")]))
+        print(', '.join([each.text for each in suggestions[0].find_all("a")]))
 
 
 def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=False, print_antonym=False):
