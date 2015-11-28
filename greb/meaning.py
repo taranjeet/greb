@@ -46,19 +46,19 @@ def display_meaning(tree):
         found_meaning = True
         print_heading('MEANING', Fore.YELLOW)
         for each in meanings.find_all("p"):
-            print(each.text)
+            print(each.get_text())
     else:
         meanings = tree.find_all("span", {"class": "ssens"})
         if meanings:
             found_meaning = True
             print_heading('MEANING', Fore.YELLOW)
             for each in meanings:
-                if ':' in each.text:
-                    each = each.text.split(':')[1].replace(u'\xc2', ' ').replace(u'\xa0', ' ')
+                if ':' in each.get_text():
+                    each = each.get_text().split(':')[1].replace(u'\xc2', ' ').replace(u'\xa0', ' ')
                     if len(each.strip()) > 0:
                         print(': ' + each.strip().encode('utf8'))
                 else:
-                    print(each.text.encode('utf8').strip())
+                    print(each.get_text().encode('utf8').strip())
     if not found_meaning:
         print_error_messages("Unable to find meaning for this word. Are you sure its spelled right?")
 
@@ -69,7 +69,7 @@ def display_sentences(tree, word):
     if sentences:
         print_heading('SENTENCE', Fore.GREEN)
         for each in sentences.find_all("li", {"class": "always-visible"}):
-            print(each.text.replace(word, Fore.CYAN + word + Fore.RESET))
+            print(each.get_text().replace(word, Fore.CYAN + word + Fore.RESET))
     else:
         print_error_messages("Oops! There are no sentences to display. Why not frame your own?")
 
@@ -79,7 +79,7 @@ def display_synonyms(tree):
     synonyms = tree.find("dl")
     if synonyms:
         print_heading('SYNONYM', Fore.BLUE)
-        print(', '.join([each.text for each in synonyms.find_all("a")]))
+        print(', '.join([each.get_text() for each in synonyms.find_all("a")]))
     else:
         print_error_messages("Ohh! There are no synonyms.")
 
@@ -90,7 +90,7 @@ def display_antonyms(tree):
     if len(antonyms) > 1:
         antonyms = antonyms[1]
         print_heading('ANTONYM', Fore.RED)
-        print(', '.join([each.text for each in antonyms.find_all("a")]))
+        print(', '.join([each.get_text() for each in antonyms.find_all("a")]))
     else:
         print_error_messages("Ohh! There are no antonyms.")
 
@@ -102,7 +102,7 @@ def get_suggestions(tree):
         print(Fore.BLUE + 'It seems that you have not entered a valid word. We know' + Fore.RESET +
               Fore.GREEN + ' To err is human.' + Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
         print_heading('SUGGESTION', Fore.YELLOW)
-        print(', '.join([each.text for each in suggestions[0].find_all("a")]))
+        print(', '.join([each.get_text() for each in suggestions[0].find_all("a")]))
 
 
 def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=False, print_antonym=False):
