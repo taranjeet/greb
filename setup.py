@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='greb',
-    version='0.0.4',
+    version='0.0.5',
     description='Finds the meaning for a particular word. Lists suggestion in case accurate word is not found.',
     long_description=open('README.rst').read(),
     author='Taranjeet Singh',
