@@ -1,8 +1,8 @@
 r"""
 
-Findmeaning is a command line tool to find meaning of words.
+Greb is a command line tool to find meaning of words.
 
-Usage: findmeaning <WORD> [-leyn] [-h | --help]
+Usage: greb <WORD> [-leyn] [-h | --help]
 
 Options:
     -l --all        Lists everything
