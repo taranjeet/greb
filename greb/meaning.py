@@ -24,7 +24,7 @@ from docopt import docopt
 from os.path import expanduser
 from random import SystemRandom
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 BASE_URL = 'http://www.merriam-webster.com/dictionary/'
 HOME = expanduser('~')
