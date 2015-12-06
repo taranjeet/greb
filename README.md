@@ -44,12 +44,22 @@ Available Options
  -e --sen        Lists sentence
  -y --syn        Lists synonyms
  -n --ant        Lists antonyms
+ -d --rdm        Displays a random from searched history
  --help 		 Lists help
  --version       Lists version
 
 ```
 
-Licence
+Additional Usage
+================
+
+Greb by default saves all the words searched in a file named `meanings.json` under home directory.
+One use of greb can be to display a random word from your searched history whenever a new instance
+of terminal is launched. To use it in this way, one needs to condifgure its `bashrc` and write 
+`greb -d` or `greb --rdm` at the end of it.
+
+
+License
 ====
 Open sourced under [MIT License](LICENSE.txt)
 
