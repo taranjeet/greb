@@ -175,7 +175,7 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
     '''reads the web page and make a html tree'''
 
     try:
-        req = requests.get(BASE_URL+word)
+        req = requests.get(BASE_URL+word, timeout=5)
     except Exception as e:
         req = None
 
