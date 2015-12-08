@@ -33,6 +33,10 @@ MEANING
 : causing feelings of fear and wonder : causing feelings of awe
 : extremely good
 
+$ greb --rdm 
+
+# fetches a random meaning from searcher history
+
 ```
 
 Available Options
