@@ -63,6 +63,12 @@ of terminal is launched. To use it in this way, one needs to configure its `bash
 `greb -d` or `greb --rdm` at the end of it.
 
 
+Todos
+=====
+
+[ ] Implementation as a class
+[ ] Option to turn off or on display.
+
 License
 ====
 Open sourced under [MIT License](LICENSE.txt)
