@@ -67,6 +67,7 @@ Todos
 =====
 
 [ ] Implementation as a class
+
 [ ] Option to turn off or on display.
 
 License
