@@ -26,7 +26,7 @@ from random import SystemRandom
 
 __version__ = '0.0.6'
 
-BASE_URL = 'http://www.merriam-webster.com/dictionary/'
+BASE_URL = 'http://www.merriam-webster.com/dictionary/{word}'
 HOME = expanduser('~')
 MEANINGS_FILE_NAME = 'meanings.json'
 FILE_PATH = os.path.join(HOME, MEANINGS_FILE_NAME)
@@ -51,7 +51,7 @@ def print_error_messages(msg):
 def find_meaning(tree, word):
     '''prints the meaning corresponding to a word'''
 
-    meanings = tree.find("div", {"class": "ld_on_collegiate"})
+    meanings = tree.find("div", {"class": "definition-block def-text"})
     temp_json = {
         "word": word,
         "meaning": [],
@@ -61,9 +61,9 @@ def find_meaning(tree, word):
     if meanings:
         found_meaning = True
         for each in meanings.find_all("p"):
-            temp_meaning_list.append(each.get_text())
+            temp_meaning_list.append(each.get_text().strip())
     else:
-        meanings = tree.find_all("span", {"class": "ssens"})
+        meanings = tree.find_all("p", {"class": "definition-inner-item with-sense"})
         if meanings:
             found_meaning = True
             for each in meanings:
@@ -128,10 +128,10 @@ def get_meaning_for_terminal():
 def display_sentences(tree, word):
     '''prints the sentences showing the use of a word'''
 
-    sentences = tree.find("div", {"class": "example-sentences"})
+    sentences = tree.find("div", {"class": "card-primary-content def-text"})
     if sentences:
         print_heading('SENTENCE', Fore.GREEN)
-        for each in sentences.find_all("li", {"class": "always-visible"}):
+        for each in sentences.find_all("li"):
             print(each.get_text().replace(word, Fore.CYAN + word + Fore.RESET))
     else:
         print_error_messages("Oops! There are no sentences to display. Why not frame your own?")
@@ -163,8 +163,9 @@ def display_antonyms(tree):
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
 
-    suggestions = tree.find_all("ol", {"class": "franklin-spelling-help"})
+    suggestions = tree.find_all("p", {"class": "definition-inner-item with-sense"})
     if suggestions:
+        print("")
         print(Fore.BLUE + 'It seems that you have not entered a valid word. We know' + Fore.RESET +
               Fore.GREEN + ' To err is human.' + Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
         print_heading('SUGGESTION', Fore.YELLOW)
@@ -174,12 +175,15 @@ def get_suggestions(tree):
 def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=False, print_antonym=False):
     '''reads the web page and make a html tree'''
 
-    try:
-        req = requests.get(BASE_URL+word, timeout=5)
-    except Exception as e:
-        req = None
+    is_error, suggestions_found = [False]*2
 
-    if req:
+    try:
+        req = requests.get(BASE_URL.format(word=word), timeout=5)
+        if req.status_code == 404:
+            suggestions_found = True
+    except Exception as e:
+        is_error = True
+    if not is_error:
         tree = BeautifulSoup(req.text, 'html.parser')
         if req.status_code == requests.codes.ok:
             if print_meaning:
@@ -190,8 +194,8 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
                 display_synonyms(tree)
             if print_antonym:
                 display_antonyms(tree)
-        elif req.status_code == 404:
-            if 'Dictionary Spelling Help' in req.text:
+        elif suggestions_found:
+            if 'spelling suggestion below' in req.text:
                 get_suggestions(tree)
             else:
                 print_error_messages("The word you've entered was not found. Please try your search again.")
@@ -214,7 +218,7 @@ def main():
             flag_sentence = (arguments.get('-e') or arguments.get('--sen')) or False
             flag_synonym = (arguments.get('-y') or arguments.get('--syn')) or False
             flag_antonym = (arguments.get('-n') or arguments.get('--ant')) or False
-        make_tree(arguments['<WORD>'].lower(), print_meaning=flag_meaning,
+        make_tree(arguments['<WORD>'].lower().strip(), print_meaning=flag_meaning,
                   print_sentence=flag_sentence, print_synonym=flag_synonym,
                   print_antonym=flag_antonym)
     else:
