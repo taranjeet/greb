@@ -2,7 +2,7 @@ r"""
 
 Greb is a command line tool to find meaning of words.
 
-Usage: greb (<WORD> [-leyn] [-h | --help] | -d)
+Usage: greb (<WORD> [-leyn] [-h | --help] | -d | -t)
 
 Options:
     -l --all        Lists everything
@@ -10,6 +10,7 @@ Options:
     -y --syn        Lists synonyms
     -n --ant        Lists antonyms
     -d --rdm        Displays a random from searched history
+    -t --trn        Displays trending words from Merriam Webster
     --version       Lists version
     -h --help       Lists help
 """
@@ -26,6 +27,7 @@ from random import SystemRandom
 
 __version__ = '0.0.6'
 
+HOME_PAGE_URL = 'http://www.merriam-webster.com'
 BASE_URL = 'http://www.merriam-webster.com/dictionary/{word}'
 HOME = expanduser('~')
 MEANINGS_FILE_NAME = 'meanings.json'
@@ -162,6 +164,17 @@ def display_antonyms(tree):
     else:
         print_error_messages("Ohh! There are no antonyms.")
 
+def words_trending_now(tree):
+    '''prints the trending words on Merriam Webster'''
+
+    trending_words = tree.find("div", {"class": "wgt-wap-home-trending-items"})
+    if trending_words:
+        print_heading('TRENDING WORDS', Fore.BLUE)
+        for idx, each in enumerate(trending_words.find_all("li"), 1):
+            word = each.find("p", {"class": "title"}).get_text().strip()
+            desc = each.find("p", {"class": "blurb"}).get_text().strip()
+            print(Fore.RED + str(idx) + ' ' + word + Fore.RESET + ' --> ' + Fore.YELLOW + desc + Fore.RESET)
+
 
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
@@ -207,12 +220,26 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
         sys.exit()
 
 
+def make_tree_home_page(trending_now=False, word_of_day=False):
+
+    try:
+        response = requests.get(HOME_PAGE_URL)
+    except Exception as e:
+        response = None
+
+    if response and response.status_code == requests.codes.ok:
+        tree = BeautifulSoup(response.text, 'html.parser')
+        if trending_now:
+            words_trending_now(tree)
+
 def main():
     '''greb is a command line tool to find meanings'''
 
     arguments = docopt(__doc__, version=__version__)
     if arguments.get('-d') or arguments.get('--rdm'):
         get_meaning_for_terminal()
+    elif arguments.get('-t') or arguments.get('--trn'):
+        make_tree_home_page(trending_now=True)
     elif arguments['<WORD>']:
         flag_meaning = True
         if (arguments.get('-l') or arguments.get('--all')):
