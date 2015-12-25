@@ -66,6 +66,8 @@ of terminal is launched. To use it in this way, one needs to configure its `bash
 Todos
 =====
 
+[ ] Need to update parsing structure.
+
 [ ] Implementation as a class
 
 [ ] Option to turn off or on display.
