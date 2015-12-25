@@ -140,10 +140,12 @@ def display_sentences(tree, word):
 def display_synonyms(tree):
     '''prints the synonyms for a given word'''
 
-    synonyms = tree.find("dl")
-    if synonyms:
+    syn_outer_div = tree.find("div", {"class": "card-box small-box related-box end"})
+    if syn_outer_div:
+        syn_inner_div = syn_outer_div.find("div", {"class": "definition-block"})
+        synonyms =  syn_inner_div.get_text()
         print_heading('SYNONYM', Fore.BLUE)
-        print(', '.join([each.get_text() for each in synonyms.find_all("a")]))
+        print(synonyms[synonyms.find("Synonyms") + len("Synonyms "): synonyms.find("Antonyms")])
     else:
         print_error_messages("Ohh! There are no synonyms.")
 
@@ -151,11 +153,12 @@ def display_synonyms(tree):
 def display_antonyms(tree):
     '''prints the antonyms for a given word'''
 
-    antonyms = tree.find_all("dl")
-    if len(antonyms) > 1:
-        antonyms = antonyms[1]
+    ant_outer_div = tree.find("div", {"class": "card-box small-box related-box end"})
+    if ant_outer_div:
+        ant_inner_div = ant_outer_div.find("div", {"class": "definition-block"})
+        antonyms =  ant_inner_div.get_text()
         print_heading('ANTONYM', Fore.RED)
-        print(', '.join([each.get_text() for each in antonyms.find_all("a")]))
+        print(antonyms[antonyms.find("Antonyms") + len("Antonyms "): antonyms.find("Related Words")])
     else:
         print_error_messages("Ohh! There are no antonyms.")
 
