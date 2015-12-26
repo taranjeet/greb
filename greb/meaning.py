@@ -2,7 +2,7 @@ r"""
 
 Greb is a command line tool to find meaning of words.
 
-Usage: greb (<WORD> [-leyn] [-h | --help] | -d | -t)
+Usage: greb (<WORD> [-leyn] [-h | --help] | -d | -t | -w)
 
 Options:
     -l --all        Lists everything
@@ -11,6 +11,7 @@ Options:
     -n --ant        Lists antonyms
     -d --rdm        Displays a random from searched history
     -t --trn        Displays trending words from Merriam Webster
+    -w --wrd        Displays the word of the day from Merriam Webster
     --version       Lists version
     -h --help       Lists help
 """
@@ -176,6 +177,17 @@ def words_trending_now(tree):
             print(Fore.RED + str(idx) + ' ' + word + Fore.RESET + ' --> ' + Fore.YELLOW + desc + Fore.RESET)
 
 
+def word_of_the_day(tree):
+    '''prints the word of the day from Merriam Webster'''
+    word_of_day = tree.find("div", {"class": "wgt-wod-home"})
+    if word_of_day:
+        print_heading('WORD OF THE DAY', Fore.BLUE)
+        word = word_of_day.find("h4", {"class": "wh-word"}).get_text().strip()
+        meaning = word_of_day.find("p", {"class": "wh-def-text"}).get_text().strip()
+        print(Fore.GREEN + word.upper() + Fore.RESET + ' : ' + Fore.YELLOW + meaning + Fore.RESET)
+        print("")
+
+
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
 
@@ -231,6 +243,8 @@ def make_tree_home_page(trending_now=False, word_of_day=False):
         tree = BeautifulSoup(response.text, 'html.parser')
         if trending_now:
             words_trending_now(tree)
+        if word_of_day:
+            word_of_the_day(tree)
 
 def main():
     '''greb is a command line tool to find meanings'''
@@ -240,6 +254,8 @@ def main():
         get_meaning_for_terminal()
     elif arguments.get('-t') or arguments.get('--trn'):
         make_tree_home_page(trending_now=True)
+    elif arguments.get('-w') or arguments.get('--wrd'):
+        make_tree_home_page(word_of_day=True)
     elif arguments['<WORD>']:
         flag_meaning = True
         if (arguments.get('-l') or arguments.get('--all')):
