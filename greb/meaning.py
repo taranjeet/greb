@@ -134,8 +134,9 @@ def display_sentences(tree, word):
     sentences = tree.find("div", {"class": "card-primary-content def-text"})
     if sentences:
         print_heading('SENTENCE', Fore.GREEN)
-        for each in sentences.find_all("li"):
-            print(each.get_text().replace(word, Fore.CYAN + word + Fore.RESET))
+        for idx, each in enumerate(sentences.find_all("li"), 1):
+            print(Fore.CYAN + str(idx) + '. ' + Fore.RESET +
+                each.get_text().replace(word, Fore.CYAN + word + Fore.RESET) + '\n')
     else:
         print_error_messages("Oops! There are no sentences to display. Why not frame your own?")
 
