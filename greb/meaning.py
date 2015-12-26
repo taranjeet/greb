@@ -146,7 +146,7 @@ def display_synonyms(tree):
     syn_outer_div = tree.find("div", {"class": "card-box small-box related-box end"})
     if syn_outer_div:
         syn_inner_div = syn_outer_div.find("div", {"class": "definition-block"})
-        synonyms =  syn_inner_div.get_text()
+        synonyms = syn_inner_div.get_text()
         print_heading('SYNONYM', Fore.BLUE)
         print(synonyms[synonyms.find("Synonyms") + len("Synonyms "): synonyms.find("Antonyms")])
     else:
@@ -159,11 +159,12 @@ def display_antonyms(tree):
     ant_outer_div = tree.find("div", {"class": "card-box small-box related-box end"})
     if ant_outer_div:
         ant_inner_div = ant_outer_div.find("div", {"class": "definition-block"})
-        antonyms =  ant_inner_div.get_text()
+        antonyms = ant_inner_div.get_text()
         print_heading('ANTONYM', Fore.RED)
         print(antonyms[antonyms.find("Antonyms") + len("Antonyms "): antonyms.find("Related Words")])
     else:
         print_error_messages("Ohh! There are no antonyms.")
+
 
 def words_trending_now(tree):
     '''prints the trending words on Merriam Webster'''
@@ -245,6 +246,7 @@ def make_tree_home_page(trending_now=False, word_of_day=False):
             words_trending_now(tree)
         if word_of_day:
             word_of_the_day(tree)
+
 
 def main():
     '''greb is a command line tool to find meanings'''

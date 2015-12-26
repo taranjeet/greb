@@ -49,6 +49,8 @@ Available Options
  -y --syn        Lists synonyms
  -n --ant        Lists antonyms
  -d --rdm        Displays a random from searched history
+ -t --trn        Displays trending words from Merriam Webster
+ -w --wrd        Displays the word of the day from Merriam Webster
  --help 		 Lists help
  --version       Lists version
 
