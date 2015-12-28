@@ -54,7 +54,7 @@ def print_error_messages(msg):
 def find_meaning(tree, word):
     '''prints the meaning corresponding to a word'''
 
-    meanings = tree.find("div", {"class": "definition-block def-text"})
+    meanings = tree.find("div", {"class": "definition-block def-text"}) or tree.find("div", {"class": "card-primary-content"})
     temp_json = {
         "word": word,
         "meaning": [],
