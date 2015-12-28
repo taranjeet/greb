@@ -26,7 +26,7 @@ from docopt import docopt
 from os.path import expanduser
 from random import SystemRandom
 
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
 HOME_PAGE_URL = 'http://www.merriam-webster.com'
 BASE_URL = 'http://www.merriam-webster.com/dictionary/{word}'
