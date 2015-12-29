@@ -64,13 +64,15 @@ One use of greb can be to display a random word from your searched history whene
 of terminal is launched. To use it in this way, one needs to configure its `bashrc` and write 
 `greb -d` or `greb --rdm` at the end of it.
 
+Also greb displays trending words and word of the day from Merriam webster.
+
 
 Todos
 =====
 
-[ ] Implementation as a class
-
-[ ] Option to turn off or on display.
+[] Implementation as a class
+[] Write test cases
+[] Add header for requests
 
 License
 ====
