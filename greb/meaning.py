@@ -63,7 +63,9 @@ def print_error_messages(msg):
 def print_result(result):
     for key, value in result.iteritems():
         if value:
-            if key not in ['word']:
+            if key in ('info_msg',):
+                print(value)
+            elif key not in ('word',):
                 print_heading(key)
                 for each in value:
                     print(each)
@@ -258,14 +260,19 @@ def word_of_the_day(tree):
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
 
-    suggestions = tree.find_all("p", {"class": "definition-inner-item with-sense"})
-    if suggestions:
-        print("")
-        print(Fore.BLUE + 'It seems that you have not entered a valid word. We know' + Fore.RESET +
-              Fore.GREEN + ' To err is human.' + Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
-        print_heading('SUGGESTION', Fore.YELLOW)
-        print(', '.join([each.get_text() for each in suggestions[0].find_all("a")]))
-
+    suggestion = []
+    suggestion_html = tree.find_all('p', {'class': 'definition-inner-item with-sense'})
+    if suggestion_html:
+        info_msg = ('\n' + Fore.BLUE + 'It seems that you have not entered a valid word. '
+                    'We know' + Fore.RESET + Fore.GREEN + ' To err is human.' + 
+                    Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
+        result = OrderedDict()
+        result['info_msg'] = info_msg
+        suggestion_str = ', '.join([each.get_text() for each in suggestion_html[0].find_all('a')])
+        suggestion.append(suggestion_str)
+        result['suggestion'] = suggestion
+        print_result(result)
+    return suggestion
 
 def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=False, print_antonym=False):
     '''reads the web page and make a html tree'''
@@ -313,7 +320,7 @@ def make_parse_tree(word):
 
     response, status_code = read_page(BASE_URL.format(word=word))
 
-    if response:
+    if status_code in [200, 404]:
         response = BeautifulSoup(response.text, 'html.parser')
     return (response, status_code)
 
@@ -337,7 +344,7 @@ def find_meaning_copy(tree):
 
 def main_copy(word, **kwargs):
     tree, status_code = make_parse_tree(word)
-    if tree:
+    if status_code == requests.codes.ok:
         meanings = find_meaning_copy(tree)
         result = OrderedDict()
         result = (('word', word),
@@ -355,6 +362,11 @@ def main_copy(word, **kwargs):
             antonyms = find_antonyms(tree)
             result['antonym'] = antonyms
         print_result(result)
+    elif status_code == 404:
+        if 'spelling suggestion below' in tree.get_text():
+            get_suggestions(tree)
+        else:
+            print_error_messages("The word you've entered was not found. Please try your search again.")
 
 
 def make_tree_home_page(trending_now=False, word_of_day=False):
