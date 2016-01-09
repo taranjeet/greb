@@ -27,7 +27,7 @@ from docopt import docopt
 from os.path import expanduser
 from random import SystemRandom
 
-from .colorcodes import *
+from .opts import *
 
 __version__ = '0.0.7'
 
@@ -150,22 +150,22 @@ def write_meaning_to_file(meaning_as_json):
             json.dump(existing_meanings, f, indent=2)
 
 
-def get_meaning_for_terminal():
+def find_meaning_from_history():
     '''displays a random meaning from searched history.
        searched history is saved in a file `meanings.json` under home directory'''
 
+    searched_meaning = OrderedDict()
     random_instance = SystemRandom()
     if os.path.isfile(FILE_PATH):
         with open(FILE_PATH, 'r') as f:
-            all_meanings = json.load(f)
+            all_meanings_searched = json.load(f)
 
-        r_int = random_instance.randrange(len(all_meanings))
+        r_int = random_instance.randrange(len(all_meanings_searched))
         # to not break the existing meanings file, need to create a OrderedDict here
         # so that word comes before meaning key
-        meaning = OrderedDict()
-        meaning['word'] = all_meanings[r_int]['word']
-        meaning['meaning'] = all_meanings[r_int]['meaning']
-        print_result(meaning)
+        searched_meaning['word'] = all_meanings_searched[r_int]['word']
+        searched_meaning['meaning'] = all_meanings_searched[r_int]['meaning']
+    return searched_meaning
 
 
 def display_sentences(tree, word):
@@ -219,7 +219,7 @@ def find_antonyms(tree):
     return antonyms
 
 
-def words_trending_now(tree):
+def find_trending_words(tree):
     '''prints the trending words on Merriam Webster'''
     trending_words = []
     try:
@@ -234,14 +234,10 @@ def words_trending_now(tree):
             each = (Fore.RED + str(i) + ' ' + word + Fore.RESET +
                     ' --> ' + Fore.YELLOW + desc + Fore.RESET)
             trending_words.append(each)
-    result = {
-        'trending words': trending_words
-    }
-    print_result(result)
-    return result
+    return trending_words
 
 
-def word_of_the_day(tree):
+def find_word_of_the_day(tree):
     '''prints the word of the day from Merriam Webster'''
     word_of_day = []
     word_of_day_html = tree.find('div', {'class': 'wgt-wod-home'})
@@ -251,11 +247,7 @@ def word_of_the_day(tree):
         word_of_day_str = (Fore.GREEN + word.upper() + Fore.RESET + ' : '
                            + Fore.YELLOW + meaning + Fore.RESET)
         word_of_day.append(word_of_day_str)
-    result = {
-        'word of the day': word_of_day
-    }
-    print_result(result)
-    return result
+    return word_of_day
 
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
@@ -309,17 +301,15 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
 
 def read_page(url):
     try:
-        response = requests.get(url, timeout=2)
+        response = requests.get(url, timeout=5, headers={'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:11.0) Gecko/20100101 Firefox/11.0',})
     except requests.exceptions.ConnectionError as e:
         return(None, False)
 
     return(response, response.status_code)
 
 
-def make_parse_tree(word):
-
-    response, status_code = read_page(BASE_URL.format(word=word))
-
+def make_parse_tree(url):
+    response, status_code = read_page(url)
     if status_code in [200, 404]:
         response = BeautifulSoup(response.text, 'html.parser')
     return (response, status_code)
@@ -342,35 +332,53 @@ def find_meaning_copy(tree):
     return meanings
 
 
-def main_copy(word, **kwargs):
-    tree, status_code = make_parse_tree(word)
-    if status_code == requests.codes.ok:
-        meanings = find_meaning_copy(tree)
-        result = OrderedDict()
-        result = (('word', word),
-                  ('meaning', meanings),)
-        result = OrderedDict(result)
-        if meanings:
-            write_meaning_to_file(result)
-        if kwargs.get('print_sentence', False):
-            sentences = find_sentences(tree, word)
-            result['sentence'] = sentences
-        if kwargs.get('print_synonym', False):
-            synonyms = find_synonyms(tree)
-            result['synonym'] = synonyms
-        if kwargs.get('print_antonym', False):
-            antonyms = find_antonyms(tree)
-            result['antonym'] = antonyms
+def main_copy(**kwargs):
+    terminal_display = kwargs.get('display_terminal', False)
+    if terminal_display:
+        result = find_meaning_from_history()
         print_result(result)
-    elif status_code == 404:
-        if 'spelling suggestion below' in tree.get_text():
-            get_suggestions(tree)
+    else:
+        word = kwargs.get('word', None)
+        if word:
+            url = BASE_URL.format(word=word)
         else:
-            print_error_messages("The word you've entered was not found. Please try your search again.")
+            url = HOME_PAGE_URL
+        tree, status_code = make_parse_tree(url)
+        if status_code == requests.codes.ok:
+            result = OrderedDict()
+            if kwargs.get('meaning', False):
+                meanings = find_meaning_copy(tree)
+                result['word'] = word
+                result['meaning'] = meanings
+                if meanings:
+                    write_meaning_to_file(result)
+            if kwargs.get('sentence', False):
+                sentences = find_sentences(tree, word)
+                result['sentence'] = sentences
+            if kwargs.get('synonym', False):
+                synonyms = find_synonyms(tree)
+                result['synonym'] = synonyms
+            if kwargs.get('antonym', False):
+                antonyms = find_antonyms(tree)
+                result['antonym'] = antonyms
+            if kwargs.get('trending_words', False):
+                trending_words = find_trending_words(tree)
+                result['trending words'] = trending_words
+            if kwargs.get('word_of_day', False):
+                word_of_day = find_word_of_the_day(tree)
+                result['word of the day'] = word_of_day
+            print_result(result)
+        elif status_code == 404:
+            if 'spelling suggestion below' in tree.get_text():
+                get_suggestions(tree)
+            else:
+                print_error_messages("The word you've entered was not found. Please try your search again.")
+    # else:
+    #     pass
 
 
 def make_tree_home_page(trending_now=False, word_of_day=False):
-
+    # SAFE_TO_REMOVE
     try:
         response = requests.get(HOME_PAGE_URL)
     except Exception as e:
@@ -379,36 +387,57 @@ def make_tree_home_page(trending_now=False, word_of_day=False):
     if response and response.status_code == requests.codes.ok:
         tree = BeautifulSoup(response.text, 'html.parser')
         if trending_now:
-            words_trending_now(tree)
+            find_trending_words(tree)
         if word_of_day:
-            word_of_the_day(tree)
+            find_word_of_the_day(tree)
 
 
 def main():
     '''greb is a command line tool to find meanings'''
 
     arguments = docopt(__doc__, version=__version__)
-    if arguments.get('-d') or arguments.get('--rdm'):
-        get_meaning_for_terminal()
-    elif arguments.get('-t') or arguments.get('--trn'):
-        make_tree_home_page(trending_now=True)
-    elif arguments.get('-w') or arguments.get('--wrd'):
-        make_tree_home_page(word_of_day=True)
-    elif arguments['<WORD>']:
-        flag_meaning = True
-        if (arguments.get('-l') or arguments.get('--all')):
-            flag_sentence, flag_synonym, flag_antonym = [True]*3
-        else:
-            flag_sentence = (arguments.get('-e') or arguments.get('--sen')) or False
-            flag_synonym = (arguments.get('-y') or arguments.get('--syn')) or False
-            flag_antonym = (arguments.get('-n') or arguments.get('--ant')) or False
-        main_copy(arguments['<WORD>'].lower().strip(), print_sentence=flag_sentence,
-                  print_antonym=flag_antonym, print_synonym=flag_synonym)
-        # make_tree(arguments['<WORD>'].lower().strip(), print_meaning=flag_meaning,
-        #           print_sentence=flag_sentence, print_synonym=flag_synonym,
-        #           print_antonym=flag_antonym)
-    else:
+    options = {}
+    if not arguments:
         print(__doc__)
+    else:
+        if arguments.get('-d') or arguments.get('--rdm'):
+            options.update({
+                    'display_terminal': True
+                })
+            # find_meaning_from_history()
+        elif arguments.get('-t') or arguments.get('--trn'):
+            options.update({
+                    'trending_words': True
+                })
+            #make_tree_home_page(trending_now=True)
+        elif arguments.get('-w') or arguments.get('--wrd'):
+            options.update({
+                    'word_of_day': True
+                })
+            # make_tree_home_page(word_of_day=True)
+        elif arguments['<WORD>']:
+            flag_meaning = True
+            options.update({
+                    'word': arguments['<WORD>'].lower().strip(),
+                    'meaning': True
+                })
+            if (arguments.get('-l') or arguments.get('--all')):
+                flag_sentence, flag_synonym, flag_antonym = [True]*3
+            else:
+                flag_sentence = (arguments.get('-e') or arguments.get('--sen')) or False
+                flag_synonym = (arguments.get('-y') or arguments.get('--syn')) or False
+                flag_antonym = (arguments.get('-n') or arguments.get('--ant')) or False
+            options.update({
+                    'sentence': flag_sentence,
+                    'synonym': flag_synonym,
+                    'antonym': flag_antonym,
+                })
+        main_copy(**options)
+            # make_tree(arguments['<WORD>'].lower().strip(), print_meaning=flag_meaning,
+            #           print_sentence=flag_sentence, print_synonym=flag_synonym,
+            #           print_antonym=flag_antonym)
+    # else:
+    #     print(__doc__)
 
 if __name__ == '__main__':
     main()
