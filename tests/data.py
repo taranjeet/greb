@@ -2,7 +2,6 @@ COMMON = {
     'URLS': {
         'base': 'http://www.merriam-webster.com/dictionary/{word}',
         'home': 'http://www.merriam-webster.com',
-        'invalid': 'http://www.merriam-.com/dictionary/',
     },
     'STATUS_CODE' : {
         'ok': 200,
@@ -10,10 +9,12 @@ COMMON = {
     }
 }
 
-READ_PAGE_DATA = {
-    'exuberant': 200,
-    'asdf': 404,
-}
+READ_PAGE_DATA = [
+                  {'url': 'http://www.merriam-webster.com/dictionary/exuberant', 'status_code': 200},
+                  {'url': 'http://www.merriam-webster.com/dictionary/asdf', 'status_code': 404},
+                  {'url': 'http://www.merriam-.com/dictionary/', 'status_code': False}
+                ]
+
 
 INPUT_WORDS = {
     'MEANING': {
@@ -44,5 +45,15 @@ INPUT_WORDS = {
         'awesome': ['amazing, astonishing, astounding, marvelous, awful, eye-opening, fabulous, miraculous, '
         'portentous, prodigious, staggering, stunning, stupendous, sublime, surprising, wonderful, wondrous'],
         'dimed': [],
+    }
+}
+
+MISSPELLED_WORDS = {
+    'asdf': {
+        'status_code': 404,
+        'suggestion_string': 'spelling suggestion below',
+        'suggestion_key': 'suggestion',
+        'suggestions': ['staff, sod off, scoff, scuff, skiff, stiff, stuff, STV, ISDN, Setif, ASTM, stave, '
+                        'setoff, Staffa, Pskov, staph, sclaff, skive, stove, stuffy']
     }
 }
