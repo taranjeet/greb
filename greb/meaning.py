@@ -21,10 +21,13 @@ import os
 import requests
 import sys
 from bs4 import BeautifulSoup
+from collections import OrderedDict
 from colorama import Fore
 from docopt import docopt
 from os.path import expanduser
 from random import SystemRandom
+
+from .colorcodes import *
 
 __version__ = '0.0.7'
 
@@ -36,25 +39,53 @@ FILE_PATH = os.path.join(HOME, MEANINGS_FILE_NAME)
 
 requests.packages.urllib3.disable_warnings()
 
+def print_word(word):
+    print('\n'+'#'*26)
+    print('#{:^24}#'.format(word.upper()))
+    print('#'*26)
 
-def print_heading(heading, color):
+
+def print_heading(heading, color=None):
     '''prints the heading for a section of output'''
-
-    print("")
+    heading = heading.upper()
+    color = color or eval(COLOR.get(heading, 'Fore.WHITE'))
+    print('')
     print(color + heading + Fore.RESET)
-    print("")
+    print('')
 
 
 def print_error_messages(msg):
     '''prints the error messgaes in red'''
-
     print(Fore.RED + msg + Fore.RESET)
+    print('')
+
+
+def print_result(result):
+    for key, value in result.iteritems():
+        if value:
+            if key not in ['word']:
+                print_heading(key)
+                for each in value:
+                    print(each)
+                print('')
+            else:
+                print_word(value)
+        else:
+            print_error_messages('Ohh! There are no {}s.'.format(key))
 
 
 def find_meaning(tree, word):
     '''prints the meaning corresponding to a word'''
 
     meanings = tree.find("div", {"class": "definition-block def-text"}) or tree.find("div", {"class": "card-primary-content"})
+    # temp_mean = (
+    #                 tree.select('ul > li > p.definition-inner-item')
+    #                 or tree.select('div.card-primary-content')[0].find_all('p')
+    #                 or tree.find_all('p', {'class': 'definition-inner-item with-sense'})
+    #             )
+    # # print temp_mean
+    # for each in temp_mean:
+    #     print each.get_text().strip()
     temp_json = {
         "word": word,
         "meaning": [],
@@ -125,10 +156,16 @@ def get_meaning_for_terminal():
             all_meanings = json.load(f)
 
         r_int = random_instance.randrange(len(all_meanings))
-        print_meaning_to_console(all_meanings[r_int])
+        # to not break the existing meanings file, need to create a OrderedDict here
+        # so that word comes before meaning key
+        meaning = OrderedDict()
+        meaning['word'] = all_meanings[r_int]['word']
+        meaning['meaning'] = all_meanings[r_int]['meaning']
+        print_result(meaning)
 
 
 def display_sentences(tree, word):
+    #OBS
     '''prints the sentences showing the use of a word'''
 
     sentences = tree.find("div", {"class": "card-primary-content def-text"})
@@ -141,30 +178,42 @@ def display_sentences(tree, word):
         print_error_messages("Oops! There are no sentences to display. Why not frame your own?")
 
 
-def display_synonyms(tree):
+def find_sentences(tree, word):
+    sentences = []
+    try:
+        sentence_div = tree.find('div', {'class':'card-primary-content def-text'}).find_all('li')
+    except Exception as e:
+        sentence_div = []
+    if sentence_div:
+        for i, each in enumerate(sentence_div, 1):
+            each = (Fore.CYAN + str(i) + '. ' + Fore.RESET + 
+                    each.get_text().replace(word, Fore.CYAN + word + Fore.RESET))
+            sentences.append(each)
+
+    return sentences
+
+
+def find_synonyms(tree):
     '''prints the synonyms for a given word'''
+    synonyms = []
+    synonyms_html = tree.find('div', {'class': 'card-box small-box related-box end'})
+    if synonyms_html:
+        synonyms_html = synonyms_html.find('div', {'class': 'definition-block'})
+        synonyms_str = synonyms_html.get_text()
+        synonyms_str = synonyms_str[synonyms_str.find('Synonyms') + len('Synonyms '): synonyms_str.find('Antonyms')]
+        synonyms.append(synonyms_str)
+    return synonyms
 
-    syn_outer_div = tree.find("div", {"class": "card-box small-box related-box end"})
-    if syn_outer_div:
-        syn_inner_div = syn_outer_div.find("div", {"class": "definition-block"})
-        synonyms = syn_inner_div.get_text()
-        print_heading('SYNONYM', Fore.BLUE)
-        print(synonyms[synonyms.find("Synonyms") + len("Synonyms "): synonyms.find("Antonyms")])
-    else:
-        print_error_messages("Ohh! There are no synonyms.")
-
-
-def display_antonyms(tree):
+def find_antonyms(tree):
     '''prints the antonyms for a given word'''
-
-    ant_outer_div = tree.find("div", {"class": "card-box small-box related-box end"})
-    if ant_outer_div:
-        ant_inner_div = ant_outer_div.find("div", {"class": "definition-block"})
-        antonyms = ant_inner_div.get_text()
-        print_heading('ANTONYM', Fore.RED)
-        print(antonyms[antonyms.find("Antonyms") + len("Antonyms "): antonyms.find("Related Words")])
-    else:
-        print_error_messages("Ohh! There are no antonyms.")
+    antonyms = []
+    antonyms_html = tree.find('div', {'class': 'card-box small-box related-box end'})
+    if antonyms_html:
+        antonyms_html = antonyms_html.find('div', {'class': 'definition-block'})
+        antonyms_str = antonyms_html.get_text()
+        antonyms_str = antonyms_str[antonyms_str.find('Antonyms') + len('Antonyms ') : antonyms_str.find('Related Words')]
+        antonyms.append(antonyms_str)
+    return antonyms
 
 
 def words_trending_now(tree):
@@ -187,7 +236,7 @@ def word_of_the_day(tree):
         word = word_of_day.find("h4", {"class": "wh-word"}).get_text().strip()
         meaning = word_of_day.find("p", {"class": "wh-def-text"}).get_text().strip()
         print(Fore.GREEN + word.upper() + Fore.RESET + ' : ' + Fore.YELLOW + meaning + Fore.RESET)
-        print("")
+        print('')
 
 
 def get_suggestions(tree):
@@ -218,6 +267,7 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
         if req.status_code == requests.codes.ok:
             if print_meaning:
                 find_meaning(tree, word)
+                find_meaning_copy(tree)
             if print_sentence:
                 display_sentences(tree, word)
             if print_synonym:
@@ -232,6 +282,63 @@ def make_tree(word, print_meaning=False, print_sentence=False, print_synonym=Fal
     else:
         print_error_messages("Unable to retrieve meaning. Try again later!")
         sys.exit()
+
+
+def read_page(url):
+    try:
+        response = requests.get(url, timeout=2)
+    except requests.exceptions.ConnectionError as e:
+        return(None, False)
+
+    return(response, response.status_code)
+
+
+def make_parse_tree(word):
+
+    response, status_code = read_page(BASE_URL.format(word=word))
+
+    if response:
+        response = BeautifulSoup(response.text, 'html.parser')
+    return (response, status_code)
+
+def find_meaning_copy(tree):
+
+    meaning_div = (
+                tree.select('ul > li > p.definition-inner-item')
+                or tree.select('div.card-primary-content')[0].find_all('p')
+                or tree.find_all('p', {'class': 'definition-inner-item with-sense'})
+                )
+    if meaning_div:
+        meanings = []
+        for each in meaning_div:
+            each =  each.get_text().strip().encode('ascii', 'ignore')
+            meanings.append(each)
+    else:
+        meanings = None
+
+    return meanings
+
+
+def main_copy(word, **kwargs):
+    tree, status_code = make_parse_tree(word)
+    if tree:
+        meanings = find_meaning_copy(tree)
+        result = OrderedDict()
+        result = (('word', word),
+                  ('meaning', meanings),)
+        result = OrderedDict(result)
+        if meanings:
+            write_meaning_to_file(result)
+        if kwargs.get('print_sentence', False):
+            sentences = find_sentences(tree, word)
+            result['sentence'] = sentences
+        if kwargs.get('print_synonym', False):
+            synonyms = find_synonyms(tree)
+            result['synonym'] = synonyms
+        if kwargs.get('print_antonym', False):
+            antonyms = find_antonyms(tree)
+            result['antonym'] = antonyms
+        print_result(result)
 
 
 def make_tree_home_page(trending_now=False, word_of_day=False):
@@ -267,9 +374,11 @@ def main():
             flag_sentence = (arguments.get('-e') or arguments.get('--sen')) or False
             flag_synonym = (arguments.get('-y') or arguments.get('--syn')) or False
             flag_antonym = (arguments.get('-n') or arguments.get('--ant')) or False
-        make_tree(arguments['<WORD>'].lower().strip(), print_meaning=flag_meaning,
-                  print_sentence=flag_sentence, print_synonym=flag_synonym,
-                  print_antonym=flag_antonym)
+        main_copy(arguments['<WORD>'].lower().strip(), print_sentence=flag_sentence,
+                  print_antonym=flag_antonym, print_synonym=flag_synonym)
+        # make_tree(arguments['<WORD>'].lower().strip(), print_meaning=flag_meaning,
+        #           print_sentence=flag_sentence, print_synonym=flag_synonym,
+        #           print_antonym=flag_antonym)
     else:
         print(__doc__)
 
