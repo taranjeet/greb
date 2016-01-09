@@ -1,6 +1,7 @@
 COLOR = {
+    'ANTONYM': 'Fore.RED',
     'MEANING': 'Fore.YELLOW',
     'SENTENCE': 'Fore.GREEN',
-    'ANTONYM': 'Fore.RED',
     'SYNONYM': 'Fore.BLUE',
+    'TRENDING WORDS': 'Fore.BLUE',
 }

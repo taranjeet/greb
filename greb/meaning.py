@@ -75,6 +75,7 @@ def print_result(result):
 
 
 def find_meaning(tree, word):
+    # SAFE_TO_REMOVE
     '''prints the meaning corresponding to a word'''
 
     meanings = tree.find("div", {"class": "definition-block def-text"}) or tree.find("div", {"class": "card-primary-content"})
@@ -117,6 +118,7 @@ def find_meaning(tree, word):
 
 
 def print_meaning_to_console(meaning_as_json):
+    # SAFE_TO_REMOVE
     '''outputs the meaning json to the console'''
 
     print_heading(meaning_as_json['word'].upper(), Fore.YELLOW)
@@ -165,7 +167,7 @@ def get_meaning_for_terminal():
 
 
 def display_sentences(tree, word):
-    #OBS
+    # SAFE_TO_REMOVE
     '''prints the sentences showing the use of a word'''
 
     sentences = tree.find("div", {"class": "card-primary-content def-text"})
@@ -181,15 +183,14 @@ def display_sentences(tree, word):
 def find_sentences(tree, word):
     sentences = []
     try:
-        sentence_div = tree.find('div', {'class':'card-primary-content def-text'}).find_all('li')
-    except Exception as e:
-        sentence_div = []
-    if sentence_div:
-        for i, each in enumerate(sentence_div, 1):
+        sentence_html = tree.find('div', {'class':'card-primary-content def-text'}).find_all('li')
+    except (AttributeError, Exception) as e:
+        sentence_html = []
+    if sentence_html:
+        for i, each in enumerate(sentence_html, 1):
             each = (Fore.CYAN + str(i) + '. ' + Fore.RESET + 
                     each.get_text().replace(word, Fore.CYAN + word + Fore.RESET))
             sentences.append(each)
-
     return sentences
 
 
@@ -218,23 +219,32 @@ def find_antonyms(tree):
 
 def words_trending_now(tree):
     '''prints the trending words on Merriam Webster'''
+    trending_words = []
+    try:
+        trending_words_html = tree.find('div', {'class': 'wgt-wap-home-trending-items'}).find_all('li')
+    except (AttributeError, Exception) as e:
+        trending_words_html = []
 
-    trending_words = tree.find("div", {"class": "wgt-wap-home-trending-items"})
-    if trending_words:
-        print_heading('TRENDING WORDS', Fore.BLUE)
-        for idx, each in enumerate(trending_words.find_all("li"), 1):
-            word = each.find("p", {"class": "title"}).get_text().strip()
-            desc = each.find("p", {"class": "blurb"}).get_text().strip()
-            print(Fore.RED + str(idx) + ' ' + word + Fore.RESET + ' --> ' + Fore.YELLOW + desc + Fore.RESET)
+    if trending_words_html:
+        for i, each in enumerate(trending_words_html, 1):
+            word = each.find('p', {'class': 'title'}).get_text().strip()
+            desc = each.find('p', {'class': 'blurb'}).get_text().strip()
+            each = (Fore.RED + str(i) + ' ' + word + Fore.RESET +
+                    ' --> ' + Fore.YELLOW + desc + Fore.RESET)
+            trending_words.append(each)
+    result = {
+        'trending words': trending_words
+    }
+    print_result(result)
 
 
 def word_of_the_day(tree):
     '''prints the word of the day from Merriam Webster'''
-    word_of_day = tree.find("div", {"class": "wgt-wod-home"})
+    word_of_day = tree.find('div', {'class': 'wgt-wod-home'})
     if word_of_day:
         print_heading('WORD OF THE DAY', Fore.BLUE)
-        word = word_of_day.find("h4", {"class": "wh-word"}).get_text().strip()
-        meaning = word_of_day.find("p", {"class": "wh-def-text"}).get_text().strip()
+        word = word_of_day.find('h4', {'class': 'wh-word'}).get_text().strip()
+        meaning = word_of_day.find('p', {'class': 'wh-def-text'}).get_text().strip()
         print(Fore.GREEN + word.upper() + Fore.RESET + ' : ' + Fore.YELLOW + meaning + Fore.RESET)
         print('')
 
