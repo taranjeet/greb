@@ -236,18 +236,24 @@ def words_trending_now(tree):
         'trending words': trending_words
     }
     print_result(result)
+    return result
 
 
 def word_of_the_day(tree):
     '''prints the word of the day from Merriam Webster'''
-    word_of_day = tree.find('div', {'class': 'wgt-wod-home'})
-    if word_of_day:
-        print_heading('WORD OF THE DAY', Fore.BLUE)
-        word = word_of_day.find('h4', {'class': 'wh-word'}).get_text().strip()
-        meaning = word_of_day.find('p', {'class': 'wh-def-text'}).get_text().strip()
-        print(Fore.GREEN + word.upper() + Fore.RESET + ' : ' + Fore.YELLOW + meaning + Fore.RESET)
-        print('')
-
+    word_of_day = []
+    word_of_day_html = tree.find('div', {'class': 'wgt-wod-home'})
+    if word_of_day_html:
+        word = word_of_day_html.find('h4', {'class': 'wh-word'}).get_text().strip()
+        meaning = word_of_day_html.find('p', {'class': 'wh-def-text'}).get_text().strip()
+        word_of_day_str = (Fore.GREEN + word.upper() + Fore.RESET + ' : '
+                           + Fore.YELLOW + meaning + Fore.RESET)
+        word_of_day.append(word_of_day_str)
+    result = {
+        'word of the day': word_of_day
+    }
+    print_result(result)
+    return result
 
 def get_suggestions(tree):
     '''lists the suggestions for a word in case of 404'''
