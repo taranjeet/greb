@@ -5,8 +5,8 @@ COMMON = {
         'invalid': 'http://www.merriam-.com/dictionary/',
     },
     'STATUS_CODE' : {
-        'OK': 200,
-        'NOT-FOUND': 404,
+        'ok': 200,
+        'not-found': 404,
     }
 }
 
