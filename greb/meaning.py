@@ -181,8 +181,7 @@ def find_word_of_the_day(tree):
     if word_of_day_html:
         word = word_of_day_html.find('h4', {'class': 'wh-word'}).get_text().strip()
         meaning = word_of_day_html.find('p', {'class': 'wh-def-text'}).get_text().strip()
-        word_of_day_str = (Fore.GREEN + word.upper() + Fore.RESET + ' : '
-                           + Fore.YELLOW + meaning + Fore.RESET)
+        word_of_day_str = (Fore.GREEN + word.upper() + Fore.RESET + ' : ' + Fore.YELLOW + meaning + Fore.RESET)
         word_of_day.append(word_of_day_str)
     return word_of_day
 
