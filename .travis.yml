@@ -8,5 +8,5 @@ install:
     - "pip install flake8"
 script:
     - "python -m test.test_greb"
-    - "flake8 greb/"
-    - "flake8 test/"
+    - "flake8 greb"
+    - "flake8 test"
