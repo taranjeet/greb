@@ -5,6 +5,7 @@ from greb import meaning as greb
 
 from . import data
 
+
 class TestGreb(unittest.TestCase):
 
     def test_read_page(self):

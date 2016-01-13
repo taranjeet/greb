@@ -3,24 +3,22 @@ COMMON = {
         'base': 'http://www.merriam-webster.com/dictionary/{word}',
         'home': 'http://www.merriam-webster.com',
     },
-    'STATUS_CODE' : {
+    'STATUS_CODE': {
         'ok': 200,
         'not-found': 404,
     }
 }
 
-READ_PAGE_DATA = [
-                  {'url': 'http://www.merriam-webster.com/dictionary/exuberant', 'status_code': 200},
+READ_PAGE_DATA = [{'url': 'http://www.merriam-webster.com/dictionary/exuberant', 'status_code': 200},
                   {'url': 'http://www.merriam-webster.com/dictionary/asdf', 'status_code': 404},
-                  {'url': 'http://www.merriam-.com/dictionary/', 'status_code': False}
-                ]
+                  {'url': 'http://www.merriam-.com/dictionary/', 'status_code': False}]
 
 
 INPUT_WORDS = {
     'MEANING': {
         'awesome': [u': causing feelings of fear and wonder : causing feelings of awe',
-                    u': extremely good',],
-        'grok': [u': to understand profoundly and intuitively',],
+                    u': extremely good'],
+        'grok': [u': to understand profoundly and intuitively'],
         'recursion': [u'1 : return 1',
                       u'2 : the determination of a succession of elements (as numbers or functions) '
                       'by operation on one or more preceding elements according to a rule or formula '
@@ -28,10 +26,10 @@ INPUT_WORDS = {
                       u'3 : a computer programming technique involving the use of a procedure, subroutine, '
                       'function, or algorithm that calls itself one or more times until a specified '
                       'condition is met at which time the rest of each repetition is processed from the '
-                      'last one called to the first   compare iteration',],
+                      'last one called to the first   compare iteration'],
         'darn': [u'1 : to mend with interlacing stitches',
                  u'2 : to embroider by filling in with long running or interlacing stitches',
-                 u': to do darning',],
+                 u': to do darning'],
     },
     'SENTENCE': {
         'multitasking': [u'\x1b[36m1. \x1b[39mThe job requires someone who is good at \x1b[36mmultitasking\x1b[39m.'],
@@ -43,7 +41,8 @@ INPUT_WORDS = {
     },
     'SYNONYM': {
         'awesome': [u'amazing, astonishing, astounding, marvelous, awful, eye-opening, fabulous, miraculous, '
-        'portentous, prodigious, staggering, stunning, stupendous, sublime, surprising, wonderful, wondrous'],
+                    'portentous, prodigious, staggering, stunning, stupendous, sublime, surprising, wonderful, '
+                    'wondrous'],
         'dimed': [],
     }
 }

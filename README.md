@@ -1,6 +1,6 @@
 Greb
 =====
-[![PyPI version](https://badge.fury.io/py/greb.svg)](https://badge.fury.io/py/greb)
+[![PyPI version](https://badge.fury.io/py/greb.svg)](https://badge.fury.io/py/greb) [![Build Status](https://travis-ci.org/staranjeet/greb.svg?branch=master)](https://travis-ci.org/staranjeet/greb)
 
 This python package finds the meaning for a word. It also lists the sentences,
 synonyms and antonyms for a given word. If a word is misspeled, it lists the suggestion 
@@ -66,13 +66,19 @@ of terminal is launched. To use it in this way, one needs to configure its `bash
 
 Also greb displays trending words and word of the day from Merriam webster.
 
+Tests
+=====
+
+To run test cases type
+
+```
+python -m test.test_greb
+```
+
 
 Todos
 =====
 
-[] Implementation as a class
-[] Write test cases
-[] Add header for requests
 
 License
 ====

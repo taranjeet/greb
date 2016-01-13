@@ -15,11 +15,10 @@ Options:
     --version       Lists version
     -h --help       Lists help
 """
-
+from __future__ import absolute_import
 import json
 import os
 import requests
-import sys
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from colorama import Fore
@@ -27,7 +26,7 @@ from docopt import docopt
 from os.path import expanduser
 from random import SystemRandom
 
-from .opts import *
+from . import opts
 
 __version__ = '0.0.7'
 
@@ -40,6 +39,7 @@ SUGGESTION_CHECK_STRING = 'spelling suggestion below'
 
 requests.packages.urllib3.disable_warnings()
 
+
 def print_word(word):
     print('\n'+'#'*26)
     print('#{:^24}#'.format(word.upper()))
@@ -49,7 +49,7 @@ def print_word(word):
 def print_heading(heading, color=None):
     '''prints the heading for a section of output'''
     heading = heading.upper()
-    color = color or eval(COLOR.get(heading, 'Fore.WHITE'))
+    color = color or eval(opts.COLOR.get(heading, 'Fore.WHITE'))
     print('')
     print(color + heading + Fore.RESET)
     print('')
@@ -120,12 +120,12 @@ def find_meaning_from_history():
 def find_sentences(tree, word):
     sentences = []
     try:
-        sentence_html = tree.find('div', {'class':'card-primary-content def-text'}).find_all('li')
-    except (AttributeError, Exception) as e:
+        sentence_html = tree.find('div', {'class': 'card-primary-content def-text'}).find_all('li')
+    except (AttributeError, Exception) as e:  # noqa
         sentence_html = []
     if sentence_html:
         for i, each in enumerate(sentence_html, 1):
-            each = (Fore.CYAN + str(i) + '. ' + Fore.RESET + 
+            each = (Fore.CYAN + str(i) + '. ' + Fore.RESET +
                     each.get_text().replace(word, Fore.CYAN + word + Fore.RESET))
             sentences.append(each)
     return sentences
@@ -150,7 +150,8 @@ def find_antonyms(tree):
     if antonyms_html:
         antonyms_html = antonyms_html.find('div', {'class': 'definition-block'})
         antonyms_str = antonyms_html.get_text()
-        antonyms_str = antonyms_str[antonyms_str.find('Antonyms') + len('Antonyms ') : antonyms_str.find('Related Words')]
+        antonyms_str = antonyms_str[antonyms_str.find('Antonyms') + len('Antonyms '):
+                                    antonyms_str.find('Related Words')]
         antonyms.append(antonyms_str)
     return antonyms
 
@@ -160,7 +161,7 @@ def find_trending_words(tree):
     trending_words = []
     try:
         trending_words_html = tree.find('div', {'class': 'wgt-wap-home-trending-items'}).find_all('li')
-    except (AttributeError, Exception) as e:
+    except (AttributeError, Exception) as e:  # noqa
         trending_words_html = []
 
     if trending_words_html:
@@ -194,7 +195,7 @@ def find_suggestions(tree):
         suggestion_html = tree.find_all('p', {'class': 'definition-inner-item with-sense'})
         if suggestion_html:
             info_msg = ('\n' + Fore.BLUE + 'It seems that you have not entered a valid word. '
-                        'I know' + Fore.RESET + Fore.GREEN + ' To err is human.' + 
+                        'I know' + Fore.RESET + Fore.GREEN + ' To err is human.' +
                         Fore.RESET + Fore.BLUE + ' Hence the suggestions.' + Fore.RESET)
             result['info_msg'] = info_msg
             suggestion_str = ', '.join([each.get_text() for each in suggestion_html[0].find_all('a')])
@@ -207,8 +208,9 @@ def find_suggestions(tree):
 
 def read_page(url, timeout=5):
     try:
-        response = requests.get(url, timeout=timeout, headers={'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:11.0) Gecko/20100101 Firefox/11.0',})
-    except requests.exceptions.ConnectionError as e:
+        response = requests.get(url, timeout=timeout, headers={'User-Agent':
+                                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:11.0) Gecko/20100101 Firefox/11.0'})
+    except requests.exceptions.ConnectionError as e:  # noqa
         return(None, False)
 
     return(response, response.status_code)
@@ -223,15 +225,13 @@ def make_parse_tree(url):
 
 def find_meaning(tree):
 
-    meaning_div = (
-                tree.select('ul > li > p.definition-inner-item')
-                or tree.select('div.card-primary-content')[0].find_all('p')
-                or tree.find_all('p', {'class': 'definition-inner-item with-sense'})
-                )
+    meaning_div = (tree.select('ul > li > p.definition-inner-item')
+                   or tree.select('div.card-primary-content')[0].find_all('p')
+                   or tree.find_all('p', {'class': 'definition-inner-item with-sense'}))
     if meaning_div:
         meanings = []
         for each in meaning_div:
-            each =  each.get_text().strip().encode('ascii', 'ignore')
+            each = each.get_text().strip().encode('ascii', 'ignore')
             meanings.append(each.decode('utf-8'))
     else:
         meanings = None
@@ -291,21 +291,20 @@ def main():
     else:
         if arguments.get('-d') or arguments.get('--rdm'):
             options.update({
-                    'display_terminal': True
+                'display_terminal': True
                 })
         elif arguments.get('-t') or arguments.get('--trn'):
             options.update({
-                    'trending_words': True
+                'trending_words': True
                 })
         elif arguments.get('-w') or arguments.get('--wrd'):
             options.update({
-                    'word_of_day': True
+                'word_of_day': True
                 })
         elif arguments['<WORD>']:
-            flag_meaning = True
             options.update({
-                    'word': arguments['<WORD>'].lower().strip(),
-                    'meaning': True
+                'word': arguments['<WORD>'].lower().strip(),
+                'meaning': True
                 })
             if (arguments.get('-l') or arguments.get('--all')):
                 flag_sentence, flag_synonym, flag_antonym = [True]*3
@@ -314,9 +313,9 @@ def main():
                 flag_synonym = (arguments.get('-y') or arguments.get('--syn')) or False
                 flag_antonym = (arguments.get('-n') or arguments.get('--ant')) or False
             options.update({
-                    'sentence': flag_sentence,
-                    'synonym': flag_synonym,
-                    'antonym': flag_antonym,
+                'sentence': flag_sentence,
+                'synonym': flag_synonym,
+                'antonym': flag_antonym,
                 })
         greb(**options)
 
