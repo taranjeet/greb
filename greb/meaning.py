@@ -62,7 +62,7 @@ def print_error_messages(msg):
 
 
 def print_result(result):
-    for key, value in result.iteritems():
+    for key, value in result.items():
         if value:
             if key in ('info_msg',):
                 print(value)
@@ -232,7 +232,7 @@ def find_meaning(tree):
         meanings = []
         for each in meaning_div:
             each =  each.get_text().strip().encode('ascii', 'ignore')
-            meanings.append(each)
+            meanings.append(each.decode('utf-8'))
     else:
         meanings = None
 
