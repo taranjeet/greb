@@ -1,9 +1,9 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, absolute_import
 import unittest
 
 from greb import meaning as greb
 
-import data
+from . import data
 
 class TestGreb(unittest.TestCase):
 
