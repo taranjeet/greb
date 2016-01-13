@@ -224,9 +224,9 @@ def make_parse_tree(url):
 
 def find_meaning(tree):
 
-    meaning_div = (tree.select('ul > li > p.definition-inner-item')
-                   or tree.select('div.card-primary-content')[0].find_all('p')
-                   or tree.find_all('p', {'class': 'definition-inner-item with-sense'}))
+    meaning_div = (tree.select('ul > li > p.definition-inner-item') or
+                   tree.select('div.card-primary-content')[0].find_all('p') or
+                   tree.find_all('p', {'class': 'definition-inner-item with-sense'}))
     if meaning_div:
         meanings = []
         for each in meaning_div:
