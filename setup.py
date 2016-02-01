@@ -5,7 +5,7 @@ import sys  # noqa
 
 setup(
     name='greb',
-    version='0.0.7',
+    version='0.0.8',
     description='Finds the meaning for a particular word. Lists suggestion in case accurate word is not found.',
     long_description=open('README.rst').read(),
     author='Taranjeet Singh',

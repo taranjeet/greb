@@ -28,7 +28,7 @@ from random import SystemRandom
 
 from . import opts
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 
 HOME_PAGE_URL = 'http://www.merriam-webster.com'
 BASE_URL = 'http://www.merriam-webster.com/dictionary/{word}'
