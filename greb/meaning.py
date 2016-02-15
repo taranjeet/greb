@@ -276,7 +276,7 @@ def greb(**kwargs):
         elif status_code == 404:
             result = find_suggestions(tree)
         else:
-            result['info_msg'] = 'Can you please chech whether you Net Connection is working properly'
+            result['info_msg'] = 'Can you please check whether your Net Connection is working properly'
         print_result(result)
 
 
