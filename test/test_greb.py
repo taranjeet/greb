@@ -1,4 +1,6 @@
 from __future__ import unicode_literals, absolute_import
+import StringIO
+import sys
 import unittest
 
 from greb import meaning as greb
@@ -77,6 +79,14 @@ class TestGreb(unittest.TestCase):
             self.assertIn(suggestion_key, result)
             # suggestions = result.get('suggestion')
             # self.assertEqual(suggestions, expected_suggestions)
+
+    def test_print_heading(self):
+        captured_output = StringIO.StringIO()
+        sys.stdout = captured_output
+        greb.print_heading(data.PRINT_FUNCTION['print_heading']['input'])
+        sys.stdout = sys.__stdout__
+        self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_heading']['output'])
+
 
 if __name__ == '__main__':
     unittest.main()

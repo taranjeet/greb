@@ -56,3 +56,10 @@ MISSPELLED_WORDS = {
                         'setoff, Staffa, Pskov, staph, sclaff, skive, stove, stuffy']
     }
 }
+
+PRINT_FUNCTION = {
+    'print_heading': {
+        'input': 'PRINT HEADING FOR TEST',
+        'output': '\n\x1b[37mPRINT HEADING FOR TEST\x1b[39m\n\n'
+    }
+}
