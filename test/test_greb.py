@@ -1,7 +1,10 @@
 from __future__ import unicode_literals, absolute_import
-import StringIO
 import sys
 import unittest
+try:
+    from StringIO import StringIO
+except Exception as e:
+    from io import StringIO
 
 from greb import meaning as greb
 
@@ -81,14 +84,14 @@ class TestGreb(unittest.TestCase):
             # self.assertEqual(suggestions, expected_suggestions)
 
     def test_print_heading(self):
-        captured_output = StringIO.StringIO()
+        captured_output = StringIO()
         sys.stdout = captured_output
         greb.print_heading(data.PRINT_FUNCTION['print_heading']['input'])
         sys.stdout = sys.__stdout__
         self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_heading']['output'])
 
     def test_print_word(self):
-        captured_output = StringIO.StringIO()
+        captured_output = StringIO()
         sys.stdout = captured_output
         greb.print_heading(data.PRINT_FUNCTION['print_word']['input'])
         sys.stdout = sys.__stdout__
