@@ -61,5 +61,9 @@ PRINT_FUNCTION = {
     'print_heading': {
         'input': 'PRINT HEADING FOR TEST',
         'output': '\n\x1b[37mPRINT HEADING FOR TEST\x1b[39m\n\n'
+    },
+    'print_word': {
+         'input': 'awesome',
+         'output': '\n\x1b[37mAWESOME\x1b[39m\n\n'
     }
 }
