@@ -1,6 +1,6 @@
 Greb
 =====
-[![PyPI version](https://badge.fury.io/py/greb.svg)](https://badge.fury.io/py/greb) [![Build Status](https://travis-ci.org/staranjeet/greb.svg?branch=master)](https://travis-ci.org/staranjeet/greb)
+[![PyPI version](https://badge.fury.io/py/greb.svg)](https://badge.fury.io/py/greb) [![Build Status](https://travis-ci.org/staranjeet/greb.svg?branch=master)](https://travis-ci.org/staranjeet/greb) [![Coverage Status](https://coveralls.io/repos/github/staranjeet/greb/badge.svg?branch=integrate-coveralls)](https://coveralls.io/github/staranjeet/greb?branch=integrate-coveralls)
 
 This python package finds the meaning for a word. It also lists the sentences,
 synonyms and antonyms for a given word. If a word is misspeled, it lists the suggestion 
