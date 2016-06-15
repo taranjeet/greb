@@ -9,7 +9,6 @@ install:
     - "pip install nose2"
     - "pip install nose-cov"
 script:
-    - "python -m test.test_greb"
     - "flake8 greb"
     - "flake8 test"
     - "coverage run --source=greb -m nose2.__main__ -v"
