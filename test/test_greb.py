@@ -66,7 +66,7 @@ class TestGreb(unittest.TestCase):
             expected_status_code = each_word_dict.get('status_code')
             suggestion_string = each_word_dict.get('suggestion_string')
             suggestion_key = each_word_dict.get('suggestion_key')
-            expected_suggestions = each_word_dict.get('suggestions')
+            # expected_suggestions = each_word_dict.get('suggestions')
 
             tree, status_code = greb.make_parse_tree(data.COMMON['URLS']['base'].format(word=each_word))
             self.assertEqual(status_code, expected_status_code)
