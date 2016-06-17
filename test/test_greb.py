@@ -97,6 +97,13 @@ class TestGreb(unittest.TestCase):
         sys.stdout = sys.__stdout__
         self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_word']['output'])
 
+    def test_print_error_messages(self):
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        greb.print_error_messages(data.PRINT_FUNCTION['print_error_messages']['input'])
+        sys.stdout = sys.__stdout__
+        self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_error_messages']['output'])
+
 
 if __name__ == '__main__':
     unittest.main()

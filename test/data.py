@@ -65,5 +65,9 @@ PRINT_FUNCTION = {
     'print_word': {
          'input': 'awesome',
          'output': '\n##########################\n#        AWESOME         #\n##########################\n'
+    },
+    'print_error_messages': {
+          'input': 'ERROR MESSAGE',
+          'output': '\x1b[31mERROR MESSAGE\x1b[39m\n\n'
     }
 }
