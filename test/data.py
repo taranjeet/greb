@@ -64,6 +64,6 @@ PRINT_FUNCTION = {
     },
     'print_word': {
          'input': 'awesome',
-         'output': '\n\x1b[37mAWESOME\x1b[39m\n\n'
+         'output': '\n##########################\n#        AWESOME         #\n##########################\n'
     }
 }
