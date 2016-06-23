@@ -105,6 +105,12 @@ class TestGreb(unittest.TestCase):
         sys.stdout = sys.__stdout__
         self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_error_messages']['output'])
 
+    def test_print_result_for_info_msg(self):
+
+        result = {}
+        result['info_msg'] = 'This is just an info message'
+        greb.print_result(result)
+
     def test_write_meaning_to_file(self):
 
         dummy_meaning_file = os.path.join(os.getcwd(), 'test', 'dummy_meaning.json')
