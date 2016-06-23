@@ -60,6 +60,11 @@ class TestGreb(unittest.TestCase):
         trending_words = greb.find_trending_words(tree)
         self.assertEqual(len(trending_words), 5)
 
+    def test_find_trending_word_with_exception(self):
+        tree = ''
+        trending_words = greb.find_trending_words(tree)
+        self.assertListEqual(trending_words, [])
+
     def test_find_word_of_the_day(self):
         tree, status_code = greb.make_parse_tree(data.COMMON['URLS']['home'])
         self.assertEqual(status_code, data.COMMON['STATUS_CODE']['ok'])
