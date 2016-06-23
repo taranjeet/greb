@@ -112,6 +112,12 @@ class TestGreb(unittest.TestCase):
 
         greb.greb(**options)
 
+    def test_write_and_find_meaning_from_history(self):
+
+        dummy_meaning_file = os.path.join(os.getcwd(), 'test', 'dummy_meaning.json')
+
+        greb.find_meaning_from_history(file_path=dummy_meaning_file)
+
 
 if __name__ == '__main__':
     unittest.main()
