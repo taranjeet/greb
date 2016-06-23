@@ -73,6 +73,10 @@ PRINT_FUNCTION = {
     'print_result_for_error_msg': {
           'input': '',
           'output': '\x1b[31mOhh! There is no value for erroneous_key.\x1b[39m\n\n'
-    }
+    },
+     'print_result_for_info_msg': {
+          'input': 'This is just an info message',
+          'output': 'This is just an info message\n'
+    },
 
 }

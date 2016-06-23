@@ -108,8 +108,12 @@ class TestGreb(unittest.TestCase):
     def test_print_result_for_info_msg(self):
 
         result = {}
-        result['info_msg'] = 'This is just an info message'
+        result['info_msg'] = data.PRINT_FUNCTION['print_result_for_info_msg']['input']
+        captured_output = StringIO()
+        sys.stdout = captured_output
         greb.print_result(result)
+        sys.stdout = sys.__stdout__
+        self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_result_for_info_msg']['output'])
 
     def test_print_result_for_error_msg(self):
 
