@@ -74,7 +74,7 @@ def print_result(result):
             else:
                 print_word(value)
         else:
-            print_error_messages('Ohh! There are no {}s.'.format(key))
+            print_error_messages('Ohh! There is no value for {}.'.format(key))
 
 
 def write_meaning_to_file(meaning_as_json, file_path=None):
