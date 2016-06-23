@@ -1,4 +1,5 @@
 from __future__ import unicode_literals, absolute_import
+import os
 import sys
 import unittest
 try:
@@ -103,6 +104,13 @@ class TestGreb(unittest.TestCase):
         greb.print_error_messages(data.PRINT_FUNCTION['print_error_messages']['input'])
         sys.stdout = sys.__stdout__
         self.assertEqual(captured_output.getvalue(), data.PRINT_FUNCTION['print_error_messages']['output'])
+
+    def test_write_meaning_to_file(self):
+
+        dummy_meaning_file = os.path.join(os.getcwd() + 'dummy_meaning.json')
+        options = {'word': 'awesome', 'meaning': True, 'file_path': dummy_meaning_file}
+
+        greb.greb(**options)
 
 
 if __name__ == '__main__':
