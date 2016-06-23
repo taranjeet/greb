@@ -77,14 +77,19 @@ def print_result(result):
             print_error_messages('Ohh! There are no {}s.'.format(key))
 
 
-def write_meaning_to_file(meaning_as_json):
+def write_meaning_to_file(meaning_as_json, file_path=None):
     '''saves the meaning json to the file `meanings.json` under home directory'''
 
-    if not os.path.isfile(FILE_PATH):
-        with open(FILE_PATH, 'w') as f:
+    meanings_file_path = FILE_PATH
+
+    if file_path:
+        meanings_file_path = file_path
+
+    if not os.path.isfile(meanings_file_path):
+        with open(meanings_file_path, 'w') as f:
             json.dump([], f)
     # first read the contents of file
-    with open(FILE_PATH, 'r') as f:
+    with open(meanings_file_path, 'r') as f:
         existing_meanings = json.load(f)
 
     # before appending check if the word exists or not
@@ -95,7 +100,7 @@ def write_meaning_to_file(meaning_as_json):
         existing_meanings.append(meaning_as_json)
 
         # write this to the same file
-        with open(FILE_PATH, 'w') as f:
+        with open(meanings_file_path, 'w') as f:
             json.dump(existing_meanings, f, indent=2)
 
 
@@ -256,8 +261,9 @@ def greb(**kwargs):
                 meanings = find_meaning(tree)
                 result['word'] = word
                 result['meaning'] = meanings
+                file_path = kwargs.get('file_path', None)
                 if meanings:
-                    write_meaning_to_file(result)
+                    write_meaning_to_file(result, file_path=file_path)
             if kwargs.get('sentence', False):
                 sentences = find_sentences(tree, word)
                 result['sentence'] = sentences
