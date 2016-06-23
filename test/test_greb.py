@@ -107,7 +107,7 @@ class TestGreb(unittest.TestCase):
 
     def test_write_meaning_to_file(self):
 
-        dummy_meaning_file = os.path.join(os.getcwd() + 'dummy_meaning.json')
+        dummy_meaning_file = os.path.join(os.getcwd(), 'test', 'dummy_meaning.json')
         options = {'word': 'awesome', 'meaning': True, 'file_path': dummy_meaning_file}
 
         greb.greb(**options)
