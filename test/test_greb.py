@@ -61,9 +61,13 @@ class TestGreb(unittest.TestCase):
         self.assertEqual(len(trending_words), 5)
 
     def test_find_trending_word_with_exception(self):
-        tree = ''
-        trending_words = greb.find_trending_words(tree)
-        self.assertListEqual(trending_words, [])
+        for each_word, each_word_dict in data.EXCEPTION_THROWING_WORDS['trending'].items():
+            expected_status_code = each_word_dict.get('status_code')
+            tree, status_code = greb.make_parse_tree(data.COMMON['URLS']['base'].format(word=each_word))
+            self.assertEqual(status_code, expected_status_code)
+            suggestions = greb.find_suggestions(tree)
+            trending_words = greb.find_trending_words(tree)
+            self.assertEqual(trending_words, each_word_dict.get('console_output'))
 
     def test_find_word_of_the_day(self):
         tree, status_code = greb.make_parse_tree(data.COMMON['URLS']['home'])
@@ -90,7 +94,7 @@ class TestGreb(unittest.TestCase):
             # self.assertEqual(suggestions, expected_suggestions)
 
     def test_find_suggestions_with_exception(self):
-        for each_word, each_word_dict in data.EXCEPTION_THROWING_WORDS.items():
+        for each_word, each_word_dict in data.EXCEPTION_THROWING_WORDS['suggestions'].items():
             expected_status_code = each_word_dict.get('status_code')
             tree, status_code = greb.make_parse_tree(data.COMMON['URLS']['base'].format(word=each_word))
             self.assertEqual(status_code, expected_status_code)
