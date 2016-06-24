@@ -57,6 +57,13 @@ MISSPELLED_WORDS = {
     }
 }
 
+EXCEPTION_THROWING_WORDS = {
+    'safadfasfa': {
+        'status_code': 404,
+    }
+}
+
+
 PRINT_FUNCTION = {
     'print_heading': {
         'input': 'PRINT HEADING FOR TEST',

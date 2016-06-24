@@ -89,6 +89,14 @@ class TestGreb(unittest.TestCase):
             # suggestions = result.get('suggestion')
             # self.assertEqual(suggestions, expected_suggestions)
 
+    def test_find_suggestions_with_exception(self):
+        for each_word, each_word_dict in data.EXCEPTION_THROWING_WORDS.items():
+            expected_status_code = each_word_dict.get('status_code')
+
+            tree, status_code = greb.make_parse_tree(data.COMMON['URLS']['base'].format(word=each_word))
+            self.assertEqual(status_code, expected_status_code)
+            suggestions = greb.find_suggestions(tree)
+
     def test_print_heading(self):
         captured_output = StringIO()
         sys.stdout = captured_output
