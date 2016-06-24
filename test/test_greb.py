@@ -146,8 +146,8 @@ class TestGreb(unittest.TestCase):
 
         dummy_meaning_file = os.path.join(os.getcwd(), 'test', 'dummy_meaning.json')
         options = {'word': 'awesome', 'meaning': True, 'file_path': dummy_meaning_file}
-
         greb.greb(**options)
+        os.remove(dummy_meaning_file)
 
     def test_write_and_find_meaning_from_history(self):
 
