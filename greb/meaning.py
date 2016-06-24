@@ -74,7 +74,7 @@ def print_result(result):
             else:
                 print_word(value)
         else:
-            print_error_messages('Ohh! There are no {}s.'.format(key))
+            print_error_messages('Ohh! There is no value for {}.'.format(key))
 
 
 def write_meaning_to_file(meaning_as_json, file_path=None):
@@ -104,14 +104,19 @@ def write_meaning_to_file(meaning_as_json, file_path=None):
             json.dump(existing_meanings, f, indent=2)
 
 
-def find_meaning_from_history():
+def find_meaning_from_history(file_path=None):
     '''displays a random meaning from searched history.
        searched history is saved in a file `meanings.json` under home directory'''
 
     searched_meaning = OrderedDict()
     random_instance = SystemRandom()
-    if os.path.isfile(FILE_PATH):
-        with open(FILE_PATH, 'r') as f:
+
+    meanings_file_path = FILE_PATH
+
+    if file_path:
+        meanings_file_path = file_path
+    if os.path.isfile(meanings_file_path):
+        with open(meanings_file_path, 'r') as f:
             all_meanings_searched = json.load(f)
 
         r_int = random_instance.randrange(len(all_meanings_searched))
