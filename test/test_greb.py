@@ -179,5 +179,28 @@ class TestGreb(unittest.TestCase):
         sys.stdout = sys.__stdout__
         os.remove(dummy_meaning_file)
 
+    def test_greb_for_trending_words(self):
+        options = {'trending_words': True}
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        greb.greb(**options)
+        sys.stdout = sys.__stdout__
+
+    def test_greb_for_word_of_the_day(self):
+        options = {'word_of_day': True}
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        greb.greb(**options)
+        sys.stdout = sys.__stdout__
+
+    def test_greb_for_word_suggestion(self):
+        for each_word, each_word_dict in data.MISSPELLED_WORDS.items():
+            options = {'word': each_word, 'meaning': True}
+            captured_output = StringIO()
+            sys.stdout = captured_output
+            greb.greb(**options)
+            sys.stdout = sys.__stdout__
+
+
 if __name__ == '__main__':
     unittest.main()
