@@ -60,6 +60,10 @@ MISSPELLED_WORDS = {
 EXCEPTION_THROWING_WORDS = {
     'safadfasfa': {
         'status_code': 404,
+        'console_output': {
+            'info_msg': ("The word you've entered was not found. However I tried finding suggestions "
+                         "thinking that you may have misspelled the word. But I failed miserably :(")
+        }
     }
 }
 
