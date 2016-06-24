@@ -201,6 +201,13 @@ class TestGreb(unittest.TestCase):
             greb.greb(**options)
             sys.stdout = sys.__stdout__
 
+    def test_greb_for_find_meaning_from_history(self):
+        options = {'display_terminal': True}
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        greb.greb(**options)
+        sys.stdout = sys.__stdout__
+
 
 if __name__ == '__main__':
     unittest.main()
